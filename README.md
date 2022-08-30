@@ -11,7 +11,7 @@ LINZ's base for OpenTelemetry Tracing and logging
 ```typescript
 import {log, LogType} from '@linzjs/tracing'
 
-log.info('Hello World')
+log.info('Hello World');
 ```
 
 ## Open Telemetry Tracer 
@@ -19,6 +19,7 @@ log.info('Hello World')
 ```typescript
 import {trace} from '@linzjs/tracing'
 
-
-trace.log.info('Hello World');
+const span = trace.startSpan();
+await doWork();
+span.close();
 ```
