@@ -1,7 +1,24 @@
-# Template Hello World (Javascript)
+# @linzjs/tracing
 
-### _A minimal template for Javascript development_
+LINZ's base for OpenTelemetry Tracing and logging
 
-## Why?
 
-This repository exists to show a working example of Typescript formatting, linting and publishing with continuous integration.
+## Usage
+
+
+## OpenTelemetry Log Data Model Logger
+
+```typescript
+import {log, LogType} from '@linzjs/tracing'
+
+log.info('Hello World')
+```
+
+## Open Telemetry Tracer 
+
+```typescript
+import {trace} from '@linzjs/tracing'
+
+
+trace.log.info('Hello World');
+```
