@@ -19,10 +19,8 @@ log.setResources({ 'host.id': 'blacha', 'service.version': '1.0.3', 'service.nam
 log.info('Hello Message', { 'http.status_code': 203, 'http.duration': 12.2323 });
 
 const traceChild = log.child().setTrace({ TraceId: '0af7651916cd43dd8448eb211c80319c' });
-
 traceChild.warn('TraceOnly', { 'error.id': '32' });
 
-// traceChild.child().setTrace({ TraceId: ''})
 log
   .child()
   .setTrace({ TraceId: '0af7651916cd43dd8448eb211c80319c', SpanId: 'b9c7c989f97918e1' })
