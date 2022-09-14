@@ -14,6 +14,10 @@ LINZ's base for OpenTelemetry Tracing and logging
 import {log, LogType} from '@linzjs/tracing'
 
 log.info('Hello World');
+
+function doWork(logger?: LogType) {
+    logger?.info('Get User', { 'http.status': 203, 'http.url': '/v1/users/3857.json' });
+}
 ```
 
 ## Open Telemetry Tracer 
