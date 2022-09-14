@@ -1,11 +1,11 @@
 {
-  "name": "@linz/template-javascript-hello-world",
+  "name": "@linzjs/tracing",
   "version": "0.0.3",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/linz/template-javascript-hello-world.git"
+    "url": "https://github.com/linz/tracing-js.git"
   },
   "license": "MIT",
   "author": {
@@ -23,7 +23,6 @@
     "test": "echo 'No tests yet'"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
     "access": "public"
   },
   "type": "module",
