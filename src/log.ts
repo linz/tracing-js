@@ -1,3 +1,3 @@
-import { createOtPinoLogger } from './ot.log.format.js';
+import { OtLogger } from './ot.log.js';
 
-export const log = createOtPinoLogger();
+export const log = new OtLogger();

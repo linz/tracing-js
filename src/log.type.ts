@@ -1,6 +1,7 @@
+import { OpenTelemetryAttributes } from './ot.attributes.js';
+
 export interface LogFunc {
-  (msg: string): void;
-  (obj: Record<string, unknown>, msg: string): void;
+  (msg: string, attrs?: Partial<OpenTelemetryAttributes>): void;
 }
 
 /**
@@ -8,11 +9,12 @@ export interface LogFunc {
  */
 export interface LogType {
   level: string;
+  setResource(key: string, value: unknown): void;
   trace: LogFunc;
   debug: LogFunc;
   info: LogFunc;
   warn: LogFunc;
   error: LogFunc;
   fatal: LogFunc;
-  child: (obj: Record<string, unknown>) => LogType;
+  child: (attr: Partial<OpenTelemetryAttributes>) => LogType;
 }
