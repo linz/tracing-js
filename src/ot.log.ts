@@ -1,5 +1,6 @@
 import { hostname } from 'os';
 import pino from 'pino';
+import { PrettyTransform } from 'pretty-json-log';
 import { LogType, OpenTelemetryTraceContext } from './log.type.js';
 import { OpenTelemetryAttributes } from './ot.attributes.js';
 import { OpenTelemetryResources } from './ot.resources.js';
@@ -24,22 +25,25 @@ function mapSeverity(num: number): number {
 }
 
 function createOtPinoLogger(): pino.Logger {
-  return pino({
-    messageKey: 'Body',
-    timestamp() {
-      /** Date needs to be a 64bit number */
-      return `,"Timestamp":"${Date.now()}0000000"`;
-    },
-    formatters: {
-      level(label, num) {
-        return { SeverityText: label.toUpperCase(), SeverityNumber: mapSeverity(num) };
+  return pino(
+    {
+      messageKey: 'Body',
+      timestamp() {
+        /** Date needs to be a 64bit number */
+        return `,"Timestamp":"${Date.now()}0000000"`;
       },
-      bindings() {
-        // Remove the standard hostname/pid bindings
-        return {};
+      formatters: {
+        level(label, num) {
+          return { SeverityText: label.toUpperCase(), SeverityNumber: mapSeverity(num) };
+        },
+        bindings() {
+          // Remove the standard hostname/pid bindings
+          return {};
+        },
       },
     },
-  });
+    process.stdout.isTTY ? PrettyTransform.stream() : process.stdout,
+  );
 }
 
 const hostName = hostname();
