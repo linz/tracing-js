@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.0 (2022-09-14)
+
+
+### Features
+
+* better support of traceId and spanId ([b05f108](https://github.com/linz/tracing-js/commit/b05f10898cb78b90969704a7ed2127a1764d783d))
+* **deps:** bump pino from 8.4.2 to 8.5.0 ([#5](https://github.com/linz/tracing-js/issues/5)) ([8c15718](https://github.com/linz/tracing-js/commit/8c15718597b16d834e59b180c4a155787bceaf45))
+* **deps:** bump pretty-json-log from 1.1.2 to 1.2.0 ([#3](https://github.com/linz/tracing-js/issues/3)) ([1ac2250](https://github.com/linz/tracing-js/commit/1ac2250f5e465690f1b4a6caee06dfeaba3bd2a7))
+* expose a opentelemetry logger ([969c00e](https://github.com/linz/tracing-js/commit/969c00e9b63f22e75fce93520be431f3fc28ed98))
+* inital OT logger using pino ([4091de2](https://github.com/linz/tracing-js/commit/4091de2f92bd4e891e4c5ecfca3aefc1ca2df381))
+* output pretty if in a tty ([55abecc](https://github.com/linz/tracing-js/commit/55abecce01308262da0e88fe433df9e0541e51c1))
+
 ## [0.0.3](https://github.com/linz/template-javascript-hello-world/compare/v0.0.2...v0.0.3) (2022-08-28)
 
 ### Bug Fixes
