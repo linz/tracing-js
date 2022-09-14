@@ -1,4 +1,6 @@
 # @linzjs/tracing
+## Work In Progress 
+
 
 LINZ's base for OpenTelemetry Tracing and logging
 

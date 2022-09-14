@@ -1,6 +1,6 @@
 import { hostname } from 'os';
 import pino from 'pino';
-import { LogType } from './log.type.js';
+import { LogType, OpenTelemetryTraceContext } from './log.type.js';
 import { OpenTelemetryAttributes } from './ot.attributes.js';
 import { OpenTelemetryResources } from './ot.resources.js';
 
@@ -48,6 +48,7 @@ export class OtLogger implements LogType {
   pino: pino.Logger<pino.LoggerOptions>;
   resources: Partial<OpenTelemetryResources> = { 'host.name': hostName };
   attributes: Record<string, unknown> = {};
+  traceContext?: OpenTelemetryTraceContext;
 
   constructor(pino = createOtPinoLogger()) {
     this.pino = pino;
@@ -56,6 +57,7 @@ export class OtLogger implements LogType {
   get level(): string {
     return this.pino.level;
   }
+
   set level(level: string) {
     this.pino.level = level;
   }
@@ -64,25 +66,38 @@ export class OtLogger implements LogType {
     this.resources[key] = value;
   }
 
-  trace(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.trace({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+  setResources(ctx: Partial<OpenTelemetryResources>): void {
+    Object.assign(this.resources, ctx);
   }
-  debug(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.debug({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+
+  setTrace(ctx: OpenTelemetryTraceContext): this {
+    this.traceContext = ctx;
+    return this;
   }
-  info(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.info({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+
+  getTrace(ctx?: OpenTelemetryTraceContext): OpenTelemetryTraceContext | undefined {
+    return ctx ?? this.traceContext;
   }
-  warn(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.warn({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+  trace(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.trace({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
   }
-  error(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.error({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+  debug(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.debug({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
   }
-  fatal(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.pino.fatal({ Resource: this.resources, Attributes: { ...attrs } }, msg);
+  info(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.info({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
   }
-  child(attr: Partial<OpenTelemetryAttributes>): OtChildLogger {
+  warn(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.warn({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
+  }
+  error(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.error({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
+  }
+  fatal(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.pino.fatal({ ...this.getTrace(ctx), Resource: this.resources, Attributes: attrs }, msg);
+  }
+
+  child(attr?: Partial<OpenTelemetryAttributes>): OtChildLogger {
     return new OtChildLogger(this, attr);
   }
 }
@@ -90,33 +105,52 @@ export class OtLogger implements LogType {
 export class OtChildLogger implements LogType {
   parent: LogType;
   attrs: Partial<OpenTelemetryAttributes>;
-  constructor(parent: LogType, attrs: Partial<OpenTelemetryAttributes>) {
+  traceContext: OpenTelemetryTraceContext;
+
+  constructor(parent: LogType, attrs?: Partial<OpenTelemetryAttributes>) {
     this.parent = parent;
-    this.attrs = attrs;
+    this.attrs = attrs ?? {};
   }
-  level: string;
+  // TODO should a child have a different level to a parent
+  get level(): string {
+    return this.parent.level;
+  }
+
+  set level(level: string) {
+    this.parent.level = level;
+  }
+
   setResource<T extends keyof OpenTelemetryResources>(key: T, value: OpenTelemetryResources[T]): void {
     this.parent.setResource(key, value);
   }
-  child(attr: Partial<OpenTelemetryAttributes>): OtChildLogger {
+  setResources(ctx: Partial<OpenTelemetryResources>): void {
+    this.parent.setResources(ctx);
+  }
+
+  setTrace(ctx: OpenTelemetryTraceContext): this {
+    this.traceContext = ctx;
+    return this;
+  }
+
+  child(attr?: Partial<OpenTelemetryAttributes>): OtChildLogger {
     return new OtChildLogger(this, attr);
   }
-  trace(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.trace(msg, { ...this.attrs, ...attrs });
+  trace(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.trace(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
-  debug(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.debug(msg, { ...this.attrs, ...attrs });
+  debug(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.debug(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
-  info(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.info(msg, { ...this.attrs, ...attrs });
+  info(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.info(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
-  warn(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.warn(msg, { ...this.attrs, ...attrs });
+  warn(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.warn(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
-  error(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.error(msg, { ...this.attrs, ...attrs });
+  error(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.error(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
-  fatal(msg: string, attrs?: Partial<OpenTelemetryAttributes>): void {
-    this.parent.fatal(msg, { ...this.attrs, ...attrs });
+  fatal(msg: string, attrs?: Partial<OpenTelemetryAttributes>, ctx?: OpenTelemetryTraceContext): void {
+    this.parent.fatal(msg, { ...this.attrs, ...attrs }, ctx ?? this.traceContext);
   }
 }
