@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/linz/tracing-js/compare/v1.0.0...v1.1.0) (2022-12-19)
+
+
+### Features
+
+* add aws xray id generator ([d65e1c2](https://github.com/linz/tracing-js/commit/d65e1c2faf9dcc158274869f0c757c0d3438fde7))
+* **deps:** bump pino from 8.5.0 to 8.7.0 ([#23](https://github.com/linz/tracing-js/issues/23)) ([d249edc](https://github.com/linz/tracing-js/commit/d249edc2e4732a533376395554e7b9df2cbcba47))
+* **deps:** bump pino from 8.7.0 to 8.8.0 ([#39](https://github.com/linz/tracing-js/issues/39)) ([0db3d6a](https://github.com/linz/tracing-js/commit/0db3d6a90cc97b2a5296baed12d1b43898410c68))
+
 ## 1.0.0 (2022-09-14)
 
 
