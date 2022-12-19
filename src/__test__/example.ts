@@ -1,11 +1,8 @@
-// log.info('Hello World');
-
 import { log } from '../log.js';
 import { otError } from '../ot.seralizer.js';
+import { XrayTrace } from '../x.ray.js';
 
-// log.trace('Hello World', undefined, { 'http.status': 200 });
-
-// log.trace(new Error(), 'Hello');
+const traceId = XrayTrace.id();
 
 log.info('Hello:error', { ...otError(new ReferenceError('This is a reference error')) });
 
@@ -18,15 +15,12 @@ log.setResources({ 'host.id': 'blacha', 'service.version': '1.0.3', 'service.nam
 
 log.info('Hello Message', { 'http.status_code': 203, 'http.duration': 12.2323 });
 
-const traceChild = log.child().setTrace({ TraceId: '0af7651916cd43dd8448eb211c80319c' });
+const traceChild = log.child().setTrace({ TraceId: traceId });
 traceChild.warn('TraceOnly', { 'error.id': '32' });
 
-log
-  .child()
-  .setTrace({ TraceId: '0af7651916cd43dd8448eb211c80319c', SpanId: 'b9c7c989f97918e1' })
-  .info('Traced', { 'http.method': 'GET' });
+log.child().setTrace({ TraceId: traceId, SpanId: 'b9c7c989f97918e1' }).info('Traced', { 'http.method': 'GET' });
 
-log.child().setTrace({ TraceId: '0af7651916cd43dd8448eb211c80319d', SpanId: 'b9c7c989f97918e1' }).warn('Missing User', {
+log.child().setTrace({ TraceId: XrayTrace.id(), SpanId: 'b9c7c989f97918e1' }).warn('Missing User', {
   'http.method': 'GET',
   'http.url': '/v1/users/38575.json',
   'http.status_code': 403,
