@@ -33,7 +33,7 @@
     "build/src/**"
   ],
   "dependencies": {
-    "pino": "^8.8.0",
+    "pino": "^8.10.0",
     "pretty-json-log": "^1.3.0"
   }
 }
