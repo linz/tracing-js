@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/linz/tracing-js/compare/v1.1.0...v1.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* update all deps ([88d11bd](https://github.com/linz/tracing-js/commit/88d11bd33e6cc073e53d0a0a73879cef24d476be))
+
 ## [1.1.0](https://github.com/linz/tracing-js/compare/v1.0.0...v1.1.0) (2022-12-19)
 
 
