@@ -17,14 +17,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   publish-release:
+    permissions:
+      contents: read
+      id-token: write
     needs: release-please
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.release_created }}
     steps:
-      - name: Build and test
-        uses: linz/action-typescript@v1
+      - uses: linz/action-typescript@v3
 
-      - name: Publish to NPM
-        run: yarn publish
+      - name: Publish to Github
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN_LINZJS}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
