@@ -25,7 +25,7 @@ function mapSeverity(num: number): number {
 }
 
 function createOtPinoLogger(): pino.Logger {
-  return pino(
+  return pino.default(
     {
       messageKey: 'Body',
       timestamp() {
@@ -109,7 +109,7 @@ export class OtLogger implements LogType {
 export class OtChildLogger implements LogType {
   parent: LogType;
   attrs: Partial<OpenTelemetryAttributes>;
-  traceContext: OpenTelemetryTraceContext;
+  traceContext?: OpenTelemetryTraceContext;
 
   constructor(parent: LogType, attrs?: Partial<OpenTelemetryAttributes>) {
     this.parent = parent;

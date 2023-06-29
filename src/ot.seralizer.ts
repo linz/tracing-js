@@ -1,4 +1,4 @@
-import { OpenTelemetryAttributes } from './ot.attributes';
+import { OpenTelemetryAttributes } from './ot.attributes.js';
 import * as ser from 'pino-std-serializers';
 
 const has = <K extends string>(x: object, key: K): x is { [key in K]: unknown } => key in x;
