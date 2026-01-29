@@ -34,6 +34,6 @@
   ],
   "dependencies": {
     "pino": "^8.14.1",
-    "pretty-json-log": "^1.4.0"
+    "pretty-json-log": "^1.5.0"
   }
 }
