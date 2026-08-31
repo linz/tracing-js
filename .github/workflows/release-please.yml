@@ -34,4 +34,4 @@ jobs:
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN_LINZJS}}
-          GITHUB_TOKEN: ${{secrets.LI_GITHUB_ACTION_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.LINZ_GITHUB_AUTOMATION}}
